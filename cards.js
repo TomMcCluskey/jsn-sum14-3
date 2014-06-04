@@ -175,5 +175,8 @@ assert(cardB.sameColor(cardC) === false, 'cardB sameColor test failed!');
 assert(cardB.prevInSuit() === 39, 'cardB prevInSuit test failed!');
 assert(cardB.nextInSuit() === 47, 'cardB nextinSuit test failed!');
 
+assert((cardA.rank === cardB.rank) === true, 'rank function identity test failed!');
+assert((cardC.nextInSuit === cardB.nextInSuit) === true, 'nextInSuit identity test failed!');
+assert((cardA.color === cardC.color) === true, 'color identity test failed!');
 
 console.log('Tests complete');

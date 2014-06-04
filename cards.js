@@ -3,8 +3,9 @@
 // function()--> possible return values
 
 function makeCard(id) {
-    var newCard = { number: id, }, 
-        inRange = function (number, min, max) {
+    var newCard = { number: id, };
+    
+    function inRange (number, min, max) {
         if (typeof (number) !== "number") {
             console.error('validation error! "' + number + '" is not a number');
             return NaN;
@@ -14,7 +15,8 @@ function makeCard(id) {
             console.error('validation error! "' + number + '" is outside the given range');
             return undefined;
         }
-    };
+    }
+    
     if(!inRange(id, 0, 51)) { return false; }
 
     newCard.rank = makeCard.rank;
@@ -23,9 +25,10 @@ function makeCard(id) {
     newCard.cardID = makeCard.cardID;
     newCard.cardName = makeCard.cardName;
     newCard.precedes = makeCard.precedes;
+    newCard.sameColor = makeCard.sameColor;
     newCard.nextInSuit = makeCard.nextInSuit;
     newCard.prevInSuit = makeCard.prevInSuit;
-    newCard.inRange = makeCard.inRange;
+    newCard.inRange = inRange;
 
     return newCard;
 }
@@ -41,7 +44,7 @@ makeCard.cardID = function() { // --> 0..51
 return this.number;
 }
 makeCard.color = function(card) { // -->"red","black"
-if (this.suit < 3) {
+if (this.suit() < 3) {
     return "red";
 } else {
     return "black";
@@ -108,7 +111,7 @@ switch (this.suit()) {
 return nameString;
 }
 makeCard.precedes = function(cardB) { //-->false,true
- if (inRange(cardB, 0, 51)) {
+ if (this.inRange(cardB.cardID(), 0, 51)) {
     if (cardB.rank() - this.rank()    ===    1) {
         return true;
     } else if ((cardB.rank() == 1) && (this.rank() == 13)) {
@@ -121,7 +124,7 @@ makeCard.precedes = function(cardB) { //-->false,true
  }
 }
 makeCard.sameColor = function(cardB) { //-->false,true
-     if (inRange(cardB, 0, 51)) {
+     if (this.inRange(cardB.cardID(), 0, 51)) {
     if (cardB.color() == this.color()) {
         return true;
     } else {
@@ -167,7 +170,7 @@ assert(cardB.suit() === 4, 'cardB suit test failed!');
 assert(cardB.cardID() === 43, 'cardB cardID test failed!');
 assert(cardB.color() === 'black', 'cardB color test failed!');
 assert(cardB.cardName() === 'Jack of Clubs', 'cardB cardName test failed!');
-assert(cardB.precedes(cardC) === false, 'cardB precedes test failed!');
+assert(cardB.precedes(cardC) === true, 'cardB precedes test failed!');
 assert(cardB.sameColor(cardC) === false, 'cardB sameColor test failed!');
 assert(cardB.prevInSuit() === 39, 'cardB prevInSuit test failed!');
 assert(cardB.nextInSuit() === 47, 'cardB nextinSuit test failed!');

@@ -45,10 +45,10 @@ makeDeque.unshift = function (val) {
 makeDeque.cut = function (offset) {
   var newFirst = [], newSecond = [], newArray = [];
   if (!offset) { offset = 0; }
-  offset += Math.floor((this.array.length)/2);
+  offset = Math.floor((this.array.length)/2) - offset;
   newFirst = this.array.slice(offset);
   newSecond = this.array.slice(0, offset); 
-  return newArray.concat(newFirst, newSecond);
+  this.array = newArray.concat(newFirst, newSecond);
 };
 
 makeDeque.map = function (convertValFn) {
@@ -56,7 +56,8 @@ makeDeque.map = function (convertValFn) {
 };
 
 makeDeque.sort = function (compareValsFn) {
-	return this.array.sort(compareValsFn);
+	this.array = this.array.sort(compareValsFn);
+        console.log(this.array);
 };
 
 
@@ -215,17 +216,27 @@ if (this.number > 3) {
 var someCards = []; /* make array of 52 card objects here, using your code from Problem 1) */
 for ( var i = 0; i < 52; i++ ) {
   someCards.push(makeCard(i));
-  console.log(i);
 }
-console.log(someCards);
 
 // At this point, data looks like Fig.1
 
 //-------
 // Part b): build a deque instance:
-//var deckOfCards = makeDeque (someCards);
+var deckOfCards = makeDeque (someCards);
 // sort it:
-//deckOfCards.sort (/* something here */);
+deckOfCards.sort (function(a,b) {return (b.number - a.number);});
+deckOfCards.cut(1);
+console.log('Top card: ' + deckOfCards.top().cardName());
+deckOfCards.sort (function(a,b) {
+  if(a.cardName() < b.cardName()) {
+    return -1;
+  }
+  if (b.cardName() < a.cardName()) {
+    return 1;
+  } else {
+    return 0;
+  }
+});
 // At this point, data looks like Fig.2
 
 // sort it differently:
@@ -256,6 +267,5 @@ x.unshift(1);
 //assert(x.array == [1,2,3,4,5,6,7], 'failed unshift test!');
 
 // console.log(x.cut(-2));
-console.log(x.sort(function (a,b) {return b - a}));
-console.log(x.map(function (x) { return x * x }));
 console.log('Finished testing');
+

@@ -1,7 +1,7 @@
 //-------
 // Part a): build a deque factory
 function makeDeque(values) {
-	var newDeque = {array: []}, i = 0;
+	var newDeque = {array: [], removed: []}, i = 0; //;
     for ( i; i < values.length; i++) {
         newDeque.array[i] = values[i];
     }
@@ -17,6 +17,7 @@ function makeDeque(values) {
     newDeque.sort = makeDeque.sort;
    newDeque.shuffle = makeDeque.shuffle; 
    newDeque.FYshuffle = makeDeque.FYshuffle;
+   newDeque.removedCard = makeDeque.removedCard;
 
     return newDeque;
 }
@@ -29,17 +30,25 @@ makeDeque.bottom = function () {
 };
 
 makeDeque.pop = function () {
+  this.removed.push(this.array[this.array.length-1]);
 	return this.array.pop();
 };
 makeDeque.push = function (val) {
+  if (!this.removedCard(val)) {
+    return false;
+  }
 	this.array.push(val);
     return;
 };
 
 makeDeque.shift = function () {
+  this.removed.push(this.array[0]);
 	return this.array.shift();
 };
 makeDeque.unshift = function (val) {
+  if (!this.removedCard(val)) {
+    return false;
+  }
 	this.array.unshift(val);
     return;
 };
@@ -59,7 +68,6 @@ makeDeque.map = function (convertValFn) {
 
 makeDeque.sort = function (compareValsFn) {
 	this.array = this.array.sort(compareValsFn);
-        console.log(this.array);
 };
 
 makeDeque.shuffle = function() {
@@ -77,6 +85,15 @@ makeDeque.FYshuffle = function() {
     this.array[i] = t;
   }
   return this.array;
+}
+
+makeDeque.removedCard = function(card) {
+  if (this.removed.indexOf(card) == -1) {
+    return false;
+  } else {
+    delete this.removed[this.removed.indexOf(card)];
+    return true;
+  }
 }
 
 // Simple version (no error-detection)
@@ -231,20 +248,14 @@ if (this.number > 3) {
 }
 
 
-var someCards = []; /* make array of 52 card objects here, using your code from Problem 1) */
+var someCards = []; 
 for ( var i = 0; i < 52; i++ ) {
   someCards.push(makeCard(i));
 }
 
-// At this point, data looks like Fig.1
-
-//-------
-// Part b): build a deque instance:
 var deckOfCards = makeDeque (someCards);
-// sort it:
 deckOfCards.sort (function(a,b) {return (b.number - a.number);});
 deckOfCards.cut(1);
-console.log('Top card: ' + deckOfCards.top().cardName());
 deckOfCards.sort (function(a,b) {
   if(a.cardName() < b.cardName()) {
     return -1;
@@ -255,36 +266,4 @@ deckOfCards.sort (function(a,b) {
     return 0;
   }
 });
-// At this point, data looks like Fig.2
-
-// sort it differently:
-//deckOfCards.sort (/* something different here */);
-
-//-------
-// Part c): build another deque instance:
-//var someNames = /* make array of student/TA names here */;
-//var deckOfNames = makeDeque (someNames);
-//deckOfNames.sort (/* something here */);
-
-//Testing!
-
-var values = [1,2,3,4,5,6,7], x = makeDeque(values);
-
-function assert(claim,message) {
-    if (!claim) console.error(message);
-}
-
-assert(x.array !== values, 'failed copy rather than alias test!');
-assert(x.top() === 1, 'failed top test!');
-assert(x.bottom() === 7, 'failed bottom test!');
-x.push(8);
-//assert(x.array == [1,2,3,4,5,6,7,8], 'failed push test!');
-assert(x.pop() == 8, 'failed pop test!');
-assert(x.shift() == 1, 'failed shift test!');
-x.unshift(1);
-//assert(x.array == [1,2,3,4,5,6,7], 'failed unshift test!');
-
-// console.log(x.cut(-2));
-deckOfCards.shuffle();
-console.log('Finished testing');
 

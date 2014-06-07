@@ -59,21 +59,180 @@ makeDeque.sort = function (compareValsFn) {
 	return this.array.sort(compareValsFn);
 };
 
-//var someCards = /* make array of 52 card objects here, using your code from Problem 1) */;
-//// At this point, data looks like Fig.1
-//
-////-------
-//// Part b): build a deque instance:
+
+// Simple version (no error-detection)
+
+// function()--> possible return values
+
+function makeCard(id) {
+    var newCard = { number: id, };
+    
+    function inRange (number, min, max) {
+        if (typeof (number) !== "number") {
+            console.error('validation error! "' + number + '" is not a number');
+            return NaN;
+        } else if ((number <= max) && (number >= min)) {
+            return true;
+        } else {
+            console.error('validation error! "' + number + '" is outside the given range');
+            return undefined;
+        }
+    }
+    
+    if(!inRange(id, 0, 51)) { return false; }
+
+    newCard.rank = makeCard.rank;
+    newCard.suit = makeCard.suit;
+    newCard.color = makeCard.color;
+    newCard.cardID = makeCard.cardID;
+    newCard.cardName = makeCard.cardName;
+    newCard.precedes = makeCard.precedes;
+    newCard.sameColor = makeCard.sameColor;
+    newCard.nextInSuit = makeCard.nextInSuit;
+    newCard.prevInSuit = makeCard.prevInSuit;
+    newCard.inRange = inRange;
+
+    return newCard;
+}
+
+
+makeCard.rank = function() { // --> 1..13
+return (Math.floor(this.number/4) + 1);
+}
+makeCard.suit = function(card) { // --> 1..4
+return ((this.number) % 4) + 1;
+}
+makeCard.cardID = function() { // --> 0..51
+return this.number;
+}
+makeCard.color = function(card) { // -->"red","black"
+if (this.suit() < 3) {
+    return "red";
+} else {
+    return "black";
+}
+}
+makeCard.cardName = function() { // --> string
+var nameString = "";
+switch (this.rank()) {
+    case 1:
+        nameString = nameString.concat("Ace");
+        break;
+    case 2:
+        nameString = nameString.concat("Two");
+        break;
+    case 3:
+        nameString = nameString.concat("Three");
+        break;
+    case 4:
+        nameString = nameString.concat("Four");
+        break;
+    case 5:
+        nameString = nameString.concat("Five");
+        break;
+    case 6:
+        nameString = nameString.concat("Six");
+        break;
+    case 7:
+        nameString = nameString.concat("Seven");
+        break;
+    case 8:
+        nameString = nameString.concat("Eight");
+        break;
+    case 9:
+        nameString = nameString.concat("Nine");
+        break;
+    case 10:
+        nameString = nameString.concat("Ten");
+        break;
+    case 11:
+        nameString = nameString.concat("Jack");
+        break;
+    case 12:
+        nameString = nameString.concat("Queen");
+        break;
+    case 13:
+        nameString = nameString.concat("King");
+        break;
+}
+nameString = nameString.concat(" of ");
+switch (this.suit()) {
+    case 1:
+        nameString = nameString.concat("Hearts");
+        break;
+    case 2:
+        nameString = nameString.concat("Diamonds");
+        break;
+    case 3:
+        nameString = nameString.concat("Spades");
+        break;
+    case 4:
+        nameString = nameString.concat("Clubs");
+    break;
+}
+return nameString;
+}
+makeCard.precedes = function(cardB) { //-->false,true
+ if (this.inRange(cardB.cardID(), 0, 51)) {
+    if (cardB.rank() - this.rank()    ===    1) {
+        return true;
+    } else if ((cardB.rank() == 1) && (this.rank() == 13)) {
+        return true;
+    } else {
+        return false;
+    }
+ } else {
+     return;
+ }
+}
+makeCard.sameColor = function(cardB) { //-->false,true
+     if (this.inRange(cardB.cardID(), 0, 51)) {
+    if (cardB.color() == this.color()) {
+        return true;
+    } else {
+        return false;
+    }
+ } else {
+     return;
+ }
+}
+makeCard.nextInSuit = function() {//--> 0..51
+if (this.number < 48) {
+    return (this.number + 4);
+} else {
+    return (this.number + 4 - 52);
+}
+}
+makeCard.prevInSuit = function() {//--> 0..51
+if (this.number > 3) {
+    return (this.number - 4);
+} else {
+    return (this.number - 4 + 52);
+}
+}
+
+
+var someCards = []; /* make array of 52 card objects here, using your code from Problem 1) */
+for ( var i = 0; i < 52; i++ ) {
+  someCards.push(makeCard(i));
+  console.log(i);
+}
+console.log(someCards);
+
+// At this point, data looks like Fig.1
+
+//-------
+// Part b): build a deque instance:
 //var deckOfCards = makeDeque (someCards);
-//// sort it:
+// sort it:
 //deckOfCards.sort (/* something here */);
-//// At this point, data looks like Fig.2
-//
-//// sort it differently:
+// At this point, data looks like Fig.2
+
+// sort it differently:
 //deckOfCards.sort (/* something different here */);
-//
-////-------
-//// Part c): build another deque instance:
+
+//-------
+// Part c): build another deque instance:
 //var someNames = /* make array of student/TA names here */;
 //var deckOfNames = makeDeque (someNames);
 //deckOfNames.sort (/* something here */);

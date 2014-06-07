@@ -15,7 +15,9 @@ function makeDeque(values) {
     newDeque.cut = makeDeque.cut;
     newDeque.map = makeDeque.map;
     newDeque.sort = makeDeque.sort;
-    
+   newDeque.shuffle = makeDeque.shuffle; 
+   newDeque.FYshuffle = makeDeque.FYshuffle;
+
     return newDeque;
 }
 
@@ -60,6 +62,22 @@ makeDeque.sort = function (compareValsFn) {
         console.log(this.array);
 };
 
+makeDeque.shuffle = function() {
+  this.array = this.array.sort(function(a,b) {return (0.5 - Math.random());});
+}
+
+makeDeque.FYshuffle = function() {
+  var m = this.array.length, t, i;
+
+  while(m) {
+    i = Math.floor(Math.random() * m--);
+    
+    t = this.array[m];
+    this.array[m] = this.array[i];
+    this.array[i] = t;
+  }
+  return this.array;
+}
 
 // Simple version (no error-detection)
 
@@ -267,5 +285,6 @@ x.unshift(1);
 //assert(x.array == [1,2,3,4,5,6,7], 'failed unshift test!');
 
 // console.log(x.cut(-2));
+deckOfCards.shuffle();
 console.log('Finished testing');
 
